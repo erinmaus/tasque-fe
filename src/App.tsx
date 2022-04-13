@@ -1,58 +1,52 @@
-import React from 'react';
-import logo from './logo.svg';
-import { Counter } from './features/counter/Counter';
-import './App.css';
+import React, { useEffect } from 'react';
+import { ThemeProvider } from 'styled-components';
+import { useTasqueDispatch, useTasqueSelector } from './app/hooks';
+import { refreshLabels, selectLabelStatus } from './stores/labelSlice';
+import { refreshStatuses, selectStatusStatus } from './stores/statusSlice';
+import { ServiceCallStatus } from './stores/status';
+import { selectEmail, selectIsLoggedIn } from './stores/accountSlice';
+import { GlobalStyle } from './components/GlobalStyle/GlobalStyle';
+import Theme from './components/Theme/Theme';
+import UnstyledLoginPopup from './components/LoginPopup';
 
-function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <Counter />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <span>
-          <span>Learn </span>
-          <a
-            className="App-link"
-            href="https://reactjs.org/"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            React
-          </a>
-          <span>, </span>
-          <a
-            className="App-link"
-            href="https://redux.js.org/"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Redux
-          </a>
-          <span>, </span>
-          <a
-            className="App-link"
-            href="https://redux-toolkit.js.org/"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Redux Toolkit
-          </a>
-          ,<span> and </span>
-          <a
-            className="App-link"
-            href="https://react-redux.js.org/"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            React Redux
-          </a>
-        </span>
-      </header>
-    </div>
+function App(): JSX.Element {
+  const dispatch = useTasqueDispatch();
+  const isLoggedIn = useTasqueSelector(selectIsLoggedIn);
+  const email = useTasqueSelector(selectEmail);
+
+  useEffect(() => {
+    if (isLoggedIn) {
+      dispatch(refreshStatuses());
+      dispatch(refreshLabels());
+    }
+  }, [dispatch, isLoggedIn]);
+
+  const labelStatus = useTasqueSelector(selectLabelStatus);
+  const statusStatus = useTasqueSelector(selectStatusStatus);
+
+  const isLoading = (
+    labelStatus === ServiceCallStatus.PENDING
+    || statusStatus === ServiceCallStatus.PENDING
   );
+  const hasError = (
+    labelStatus === ServiceCallStatus.FAILURE
+    || statusStatus === ServiceCallStatus.FAILURE
+  );
+
+  if (!isLoggedIn) {
+    return (
+      <ThemeProvider theme={Theme}>
+        <GlobalStyle />
+        <UnstyledLoginPopup />
+      </ThemeProvider >
+    );
+  }
+
+  return <>
+    {isLoading && <div>Loading...</div>}
+    {hasError && <div>Error!</div>}
+    {!isLoading && !hasError && <div>Success, {email}!</div>}
+  </>;
 }
 
 export default App;

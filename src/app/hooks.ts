@@ -1,6 +1,9 @@
+import _ from 'lodash';
 import { TypedUseSelectorHook, useDispatch, useSelector } from 'react-redux';
-import type { RootState, AppDispatch } from './store';
+import { TasqueDispatch, TasqueState } from '../stores';
 
-// Use throughout your app instead of plain `useDispatch` and `useSelector`
-export const useAppDispatch = () => useDispatch<AppDispatch>();
-export const useAppSelector: TypedUseSelectorHook<RootState> = useSelector;
+export const useTasqueDispatch = () => useDispatch<TasqueDispatch>();
+export const useTasqueSelector: TypedUseSelectorHook<TasqueState> = useSelector;
+export function useTasqueObjectSelector(selector: <T>(state: TasqueState) => T) {
+  return useTasqueSelector(selector, _.isEqual);
+}
