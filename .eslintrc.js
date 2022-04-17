@@ -23,12 +23,13 @@ module.exports = {
     '@typescript-eslint'
   ],
   rules: {
+    'arrow-parens': 'off',
     'import/prefer-default-export': 'off',
     'no-param-reassign': [
       'error',
       {
         'props': true,
-        'ignorePropertyModificationsFor': [ 'state' ]
+        'ignorePropertyModificationsFor': ['state']
       }
     ],
     '@typescript-eslint/member-delimiter-style': [

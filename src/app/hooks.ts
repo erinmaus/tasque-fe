@@ -4,6 +4,6 @@ import { TasqueDispatch, TasqueState } from '../stores';
 
 export const useTasqueDispatch = () => useDispatch<TasqueDispatch>();
 export const useTasqueSelector: TypedUseSelectorHook<TasqueState> = useSelector;
-export function useTasqueObjectSelector(selector: <T>(state: TasqueState) => T) {
+export function useTasqueObjectSelector<T>(selector: (state: TasqueState) => T) {
   return useTasqueSelector(selector, _.isEqual);
 }

@@ -16,6 +16,12 @@ const LoginPanel = styled(Panel)`
   left: 50%;
   top: 50%;
   transform: translate(-50%, -50%);
+
+  max-width: 16em;
+
+  @media(min-width: 480px) {
+    max-width: 100vw;
+  }
 `;
 
 function LoginWindow(): JSX.Element {
@@ -33,7 +39,7 @@ function LoginWindow(): JSX.Element {
     <LoginPanel>
       {
         loginStatus === ServiceCallStatus.FAILURE
-          && <Failure>Could not login with given username and password.</Failure>
+        && <Failure>Could not login with given username and password.</Failure>
       }
       <VerticalForm onSubmit={onSubmit}>
         <FormLabel htmlFor="username">Username</FormLabel>

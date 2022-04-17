@@ -1,6 +1,7 @@
 import React, { useEffect } from 'react';
 import { useTasqueDispatch, useTasqueSelector } from './app/hooks';
 import GlobalStyle from './components/GlobalStyle';
+import TableOfContents from './components/pages/TableOfContents';
 import LoginWindow from './components/windows/LoginWindow';
 import { refreshLabels, selectLabelStatus } from './stores/labelSlice';
 import { refreshStatuses, selectStatusStatus } from './stores/statusSlice';
@@ -34,9 +35,7 @@ function App(): JSX.Element {
     <>
       <GlobalStyle />
       {!isLoggedIn && <LoginWindow />}
-      {isLoading && <div>Loading...</div>}
-      {hasError && <div>Error!</div>}
-      {isLoggedIn && !hasError && !isLoading && <div>Success!</div>}
+      {isLoggedIn && !isLoading && !hasError && <TableOfContents />}
     </>
   );
 }

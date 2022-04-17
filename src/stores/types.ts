@@ -1,5 +1,6 @@
 import { Token } from '../service/authService';
 import { Label } from '../service/labelService';
+import { Project } from '../service/projectService';
 import { Status } from '../service/statusService';
 
 export const enum ServiceCallStatus {
@@ -19,6 +20,11 @@ export interface LabelState {
   status: ServiceCallStatus;
 }
 
+export interface ProjectState {
+  projects: Project[];
+  status: ServiceCallStatus;
+}
+
 export interface StatusState {
   statuses: Status[];
   status: ServiceCallStatus;
@@ -33,6 +39,7 @@ export interface UserState {
 
 export interface TasqueState {
   label: LabelState;
+  project: ProjectState;
   status: StatusState;
   user: UserState;
 }
