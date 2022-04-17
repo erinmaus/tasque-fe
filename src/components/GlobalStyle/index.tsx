@@ -116,6 +116,7 @@ const GlobalStyle = createGlobalStyle`
     font-family: 'ItsyRealm Sans-Serif', sans-serif;
     font-size: 18px;
     line-height: 1.5;
+    color: #ffffff;
 
     min-height: 100vh;
     min-width: 100vw;

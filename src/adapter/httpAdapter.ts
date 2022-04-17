@@ -1,11 +1,14 @@
-import axios, { AxiosRequestConfig } from 'axios';
+import axios, { AxiosRequestConfig, AxiosResponse } from 'axios';
 
 export interface HttpAdapterConfig extends AxiosRequestConfig {
   // TODO: Retries.
   // Nothing for now.
 }
 
-export function get(url: string, config: HttpAdapterConfig = {}) {
+export function get<Response>(
+  url: string,
+  config: HttpAdapterConfig = {},
+): Promise<AxiosResponse<Response>> {
   return axios({
     ...config,
     url,
@@ -13,7 +16,11 @@ export function get(url: string, config: HttpAdapterConfig = {}) {
   });
 }
 
-export function post<Body>(url: string, body: Body | undefined, config: HttpAdapterConfig = {}) {
+export function post<Response, Body>(
+  url: string,
+  body: Body | undefined,
+  config: HttpAdapterConfig = {},
+): Promise<AxiosResponse<Response>> {
   return axios({
     ...config,
     url,
@@ -22,7 +29,11 @@ export function post<Body>(url: string, body: Body | undefined, config: HttpAdap
   });
 }
 
-export function patch<Body>(url: string, body: Body | undefined, config: HttpAdapterConfig = {}) {
+export function patch<Response, Body>(
+  url: string,
+  body: Body | undefined,
+  config: HttpAdapterConfig = {},
+): Promise<AxiosResponse<Response>> {
   return axios({
     ...config,
     url,
