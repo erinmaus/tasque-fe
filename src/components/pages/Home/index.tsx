@@ -1,7 +1,8 @@
-import React, { useEffect } from 'react';
+import React from 'react';
+import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
-import { useTasqueDispatch, useTasqueObjectSelector, useTasqueSelector } from '../../../app/hooks';
-import { getAllProjects, selectProjects, selectProjectStatus } from '../../../stores/projectSlice';
+import { useTasqueObjectSelector, useTasqueSelector } from '../../../app/hooks';
+import { selectProjects, selectProjectsStatus } from '../../../stores/projectSlice';
 import { ServiceCallStatus } from '../../../stores/types';
 import { selectUsername } from '../../../stores/userSlice';
 import Button from '../../common/button/Button';
@@ -19,15 +20,9 @@ const ProjectButton = styled(Button)`
 
 function Home(): JSX.Element {
   const username = useTasqueSelector(selectUsername);
-  const projectStatus = useTasqueSelector(selectProjectStatus);
+  const projectStatus = useTasqueSelector(selectProjectsStatus);
   const projects = useTasqueObjectSelector(selectProjects);
-  const dispatch = useTasqueDispatch();
-
-  useEffect(() => {
-    if (projectStatus !== ServiceCallStatus.SUCCESS) {
-      dispatch(getAllProjects());
-    }
-  }, [dispatch, projectStatus]);
+  const navigate = useNavigate();
 
   const isLoading = (
     projectStatus === ServiceCallStatus.IDLE
@@ -55,7 +50,7 @@ function Home(): JSX.Element {
       {isLoading && <Loader />}
       {
         !isLoading && hasProjects && projects.map(p => (
-          <ProjectButton key={p.id}>{p.title}</ProjectButton>
+          <ProjectButton key={p.id} onClick={() => navigate(`/project/${p.id}`)}>{p.title}</ProjectButton>
         ))
       }
     </Panel>

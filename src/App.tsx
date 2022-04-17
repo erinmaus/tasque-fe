@@ -4,6 +4,7 @@ import GlobalStyle from './components/GlobalStyle';
 import TableOfContents from './components/pages/TableOfContents';
 import LoginWindow from './components/windows/LoginWindow';
 import { refreshLabels, selectLabelStatus } from './stores/labelSlice';
+import { getAllProjects } from './stores/projectSlice';
 import { refreshStatuses, selectStatusStatus } from './stores/statusSlice';
 import { ServiceCallStatus } from './stores/types';
 import { selectIsLoggedIn } from './stores/userSlice';
@@ -16,6 +17,7 @@ function App(): JSX.Element {
     if (isLoggedIn) {
       dispatch(refreshLabels());
       dispatch(refreshStatuses());
+      dispatch(getAllProjects());
     }
   }, [dispatch, isLoggedIn]);
 

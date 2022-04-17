@@ -1,6 +1,6 @@
 import { Token } from '../service/authService';
 import { Label } from '../service/labelService';
-import { Project } from '../service/projectService';
+import { Project, TicketLookupQuery } from '../service/projectService';
 import { Status } from '../service/statusService';
 
 export const enum ServiceCallStatus {
@@ -20,9 +20,17 @@ export interface LabelState {
   status: ServiceCallStatus;
 }
 
-export interface ProjectState {
-  projects: Project[];
+export interface ProjectWithStatus extends Project {
   status: ServiceCallStatus;
+}
+
+export interface ProjectState {
+  projects: ProjectWithStatus[];
+  status: ServiceCallStatus;
+}
+
+export interface TicketLookupQueryWithID extends TicketLookupQuery {
+  id: number;
 }
 
 export interface StatusState {
