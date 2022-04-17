@@ -1,5 +1,6 @@
 import React, { useEffect } from 'react';
 import { useTasqueDispatch, useTasqueSelector } from './app/hooks';
+import GlobalStyle from './components/GlobalStyle';
 import { refreshLabels, selectLabelStatus } from './stores/labelSlice';
 import { refreshStatuses, selectStatusStatus } from './stores/statusSlice';
 import { ServiceCallStatus } from './stores/types';
@@ -29,6 +30,7 @@ function App(): JSX.Element {
 
   return (
     <>
+      <GlobalStyle />
       {isLoading && <div>Loading...</div>}
       {hasError && <div>Error!</div>}
     </>
