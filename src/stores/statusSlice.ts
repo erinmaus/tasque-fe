@@ -1,23 +1,15 @@
-import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { TasqueState } from '.';
-import { getStatuses, Status } from '../service/statusService';
-import { ServiceCallStatus } from './status';
-
-export interface StatusState {
-  statuses: Status[],
-  status: ServiceCallStatus;
-}
+import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
+import * as statusService from '../service/statusService';
+import { ServiceCallStatus, StatusState, TasqueState } from './types';
 
 const initialState: StatusState = {
   statuses: [],
   status: ServiceCallStatus.IDLE,
-}
+};
 
 export const refreshStatuses = createAsyncThunk(
   'status/getStatuses',
-  () => {
-    return getStatuses();
-  }
+  () => statusService.getStatuses(),
 );
 
 export const statusSlice = createSlice({
@@ -36,11 +28,13 @@ export const statusSlice = createSlice({
       .addCase(refreshStatuses.rejected, (state) => {
         state.status = ServiceCallStatus.FAILURE;
       });
-  }
+  },
 });
 
 export const selectStatuses = (state: TasqueState) => state.status.statuses;
-export const selectStatus = (id: number) => (state: TasqueState) => state.status.statuses.find(s => s.id === id);
+export const selectStatus = (id: number) => (state: TasqueState) => (
+  state.status.statuses.find((s) => s.id === id)
+);
 // Horrible name.
 export const selectStatusStatus = (state: TasqueState) => state.status.status;
 

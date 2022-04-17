@@ -1,5 +1,5 @@
-import { post } from "../adapter/httpAdapter";
-import { getBackendEndpoint } from "../config";
+import { post } from '../adapter/httpAdapter';
+import { getBackendEndpoint } from '../config';
 
 export interface Token {
   access_token: string
@@ -8,12 +8,13 @@ export interface Token {
 
 export async function authenticate(username: string, password: string): Promise<Token> {
   const credentials: FormData = new FormData();
-  credentials.append("username", username);
-  credentials.append("password", password);
+  credentials.append('username', username);
+  credentials.append('password', password);
 
   const { data } = await post(
     `${getBackendEndpoint()}/api/v1/auth/token`,
     credentials,
-    { headers: { "Content-Type": "multipart/form-data" } });
+    { headers: { 'Content-Type': 'multipart/form-data' } },
+  );
   return data;
-};
+}

@@ -1,23 +1,15 @@
-import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { TasqueState } from '.';
-import { getLabels, Label } from '../service/labelService';
-import { ServiceCallStatus } from './status';
-
-export interface LabelState {
-  labels: Label[],
-  status: ServiceCallStatus;
-}
+import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
+import * as labelService from '../service/labelService';
+import { LabelState, ServiceCallStatus, TasqueState } from './types';
 
 const initialState: LabelState = {
   labels: [],
   status: ServiceCallStatus.IDLE,
-}
+};
 
 export const refreshLabels = createAsyncThunk(
   'label/getLabels',
-  () => {
-    return getLabels();
-  }
+  () => labelService.getLabels(),
 );
 
 export const labelSlice = createSlice({
@@ -36,11 +28,13 @@ export const labelSlice = createSlice({
       .addCase(refreshLabels.rejected, (state) => {
         state.status = ServiceCallStatus.FAILURE;
       });
-  }
+  },
 });
 
 export const selectLabels = (state: TasqueState) => state.label.labels;
-export const selectLabel = (id: number) => (state: TasqueState) => state.label.labels.find(l => l.id === id);
+export const selectLabel = (id: number) => (state: TasqueState) => (
+  state.label.labels.find((l) => l.id === id)
+);
 export const selectLabelStatus = (state: TasqueState) => state.label.status;
 
 export const labelReducer = labelSlice.reducer;

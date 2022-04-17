@@ -5,7 +5,9 @@ module.exports = {
   },
   extends: [
     'plugin:react/recommended',
-    'standard'
+    'airbnb',
+    'airbnb/hooks',
+    'airbnb-typescript',
   ],
   parser: '@typescript-eslint/parser',
   parserOptions: {
@@ -13,12 +15,21 @@ module.exports = {
       jsx: true
     },
     ecmaVersion: 'latest',
-    sourceType: 'module'
+    sourceType: 'module',
+    project: 'tsconfig.json'
   },
   plugins: [
     'react',
     '@typescript-eslint'
   ],
   rules: {
+    'import/prefer-default-export': 'off',
+    'no-param-reassign': [
+      'error',
+      {
+        'props': true,
+        'ignorePropertyModificationsFor': [ 'state' ]
+      }
+    ]
   }
 }

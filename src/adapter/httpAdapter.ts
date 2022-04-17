@@ -9,7 +9,7 @@ export function get(url: string, config: HttpAdapterConfig = {}) {
   return axios({
     ...config,
     url,
-    method: 'get'
+    method: 'get',
   });
 }
 
@@ -18,7 +18,7 @@ export function post<Body>(url: string, body: Body | undefined, config: HttpAdap
     ...config,
     url,
     data: body,
-    method: 'post'
+    method: 'post',
   });
 }
 
@@ -27,6 +27,6 @@ export function patch<Body>(url: string, body: Body | undefined, config: HttpAda
     ...config,
     url,
     data: body,
-    method: 'patch'
+    method: 'patch',
   });
 }
