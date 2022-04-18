@@ -35,6 +35,9 @@ export const selectStatuses = (state: TasqueState) => state.status.statuses;
 export const selectStatus = (id: number) => (state: TasqueState) => (
   state.status.statuses.find((s) => s.id === id)
 );
+export const selectStatusTitle = (id: number) => (state: TasqueState) => (
+  state.status.statuses.find((l) => l.id === id)?.title
+);
 // Horrible name.
 export const selectStatusStatus = (state: TasqueState) => state.status.status;
 

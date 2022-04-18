@@ -7,6 +7,7 @@ import TicketDescription from '../TicketDescription';
 import TicketLabel from '../TicketLabel';
 import TicketPoints from '../TicketPoints';
 import TicketProgress from '../TicketProgress';
+import TicketStatus from '../TicketStatus';
 import TicketTitle from '../TicketTitle';
 import border from './images/border.png';
 
@@ -66,6 +67,7 @@ function TicketRow({
       <TicketSummary>
         <TicketID>{`#${ticket.id}`}</TicketID>
         <TicketLabel ticket={ticket} />
+        <TicketStatus ticket={ticket} />
         <TicketPoints ticket={ticket} />
         <TicketProgress ticket={ticket} />
         <TicketTitle ticket={ticket} />
