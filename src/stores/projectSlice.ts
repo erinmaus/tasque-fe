@@ -99,7 +99,9 @@ export const selectTickets = (id: number) => (state: TasqueState) => (
 export const selectOrphanTickets = (id: number) => (
   (state: TasqueState) => {
     const tickets = state.project.projects.find(p => p.id === id)?.tickets;
-    return tickets && tickets.filter(t => !t.parent);
+    const orphans = tickets && tickets.filter(t => !t.parent);
+    orphans?.sort((a, b) => a.id - b.id);
+    return orphans;
   }
 );
 export const selectTicket = (projectID: number, ticketID: number) => (
@@ -111,7 +113,9 @@ export const selectTicket = (projectID: number, ticketID: number) => (
 export const selectTicketChildren = (projectID: number, ticketID: number) => (
   (state: TasqueState) => {
     const tickets = state.project.projects.find(p => p.id === projectID)?.tickets;
-    return tickets && tickets.filter(t => t.parent === ticketID);
+    const children = tickets && tickets.filter(t => t.parent === ticketID);
+    children?.sort((a, b) => a.id - b.id);
+    return children;
   }
 );
 

@@ -40,16 +40,16 @@ const TicketPanelItem = styled.li`
 function getLabelColor(title: string): string {
   switch (title.toLowerCase()) {
     case 'milestone':
-      return 'purple';
+      return '#8d5fd3';
     case 'epic':
-      return 'green';
+      return '#71c837';
     case 'feature':
-      return 'orange';
+      return '#ffb52a';
     case 'story':
-      return 'blue';
+      return '#37abc8';
     case 'template':
     default:
-      return 'red';
+      return '#c83737';
   }
 }
 
