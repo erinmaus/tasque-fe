@@ -31,7 +31,7 @@ const TicketSummary = styled.summary`
     margin-right: 1rem;
   }
   
-  > *:last-child {
+  > input:last-of-type {
     flex: 1 1 0;
   }
 `;
@@ -109,14 +109,14 @@ function TicketRow({
   return (
     <TicketDetails open={expand}>
       <TicketSummary onDoubleClick={() => navigate(`/project/${projectID}/ticket/${ticket.id}`)}>
-        <TicketID>{`#${ticket.id}`}</TicketID>
+        <TicketID>{`#${ticket.id.toString().padStart(3, '0')}`}</TicketID>
         <TicketLabel ticket={ticket} />
         <TicketStatus ticket={ticket} />
         <TicketPoints ticket={ticket} />
         <TicketProgress ticket={ticket} />
         <TicketTitle ticket={ticket} />
+        <PrimaryButton onClick={createNewTicket}>+</PrimaryButton>
       </TicketSummary>
-      <PrimaryButton onClick={createNewTicket}>New...</PrimaryButton>
       <TicketDescription ticket={ticket} />
       {
         children && (
