@@ -2,9 +2,15 @@ import { get } from '../adapter/httpAdapter';
 import { getBackendEndpoint } from '../config';
 import { getToken, Token } from './authService';
 
+export enum BuiltinStatusTypes {
+  NOT_STARTED = 'Not Started',
+  DONE = 'Done',
+  PENDING = 'Pending',
+}
+
 export interface Status {
   id: number;
-  title: string;
+  title: BuiltinStatusTypes;
   content: string;
 }
 

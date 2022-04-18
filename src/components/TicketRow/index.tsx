@@ -5,6 +5,7 @@ import { Ticket } from '../../service/projectService';
 import { selectTicketChildren } from '../../stores/projectSlice';
 import TicketDescription from '../TicketDescription';
 import TicketLabel from '../TicketLabel';
+import TicketProgress from '../TicketProgress';
 import TicketTitle from '../TicketTitle';
 import border from './images/border.png';
 
@@ -64,6 +65,7 @@ function TicketRow({
       <TicketSummary>
         <TicketID>{`#${ticket.id}`}</TicketID>
         <TicketLabel ticket={ticket} />
+        <TicketProgress ticket={ticket} />
         <TicketTitle ticket={ticket} />
       </TicketSummary>
       <TicketDescription ticket={ticket} />
