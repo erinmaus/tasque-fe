@@ -14,6 +14,11 @@ export const me = createAsyncThunk(
   (token: authService.Token = authService.getToken()) => authService.me(token),
 );
 
+export const refresh = createAsyncThunk(
+  'user/refresh',
+  (token: authService.Token = authService.getToken()) => authService.refresh(token),
+);
+
 export const login = createAsyncThunk(
   'user/login',
   async ({ username, password }: Credentials, { dispatch }) => {
@@ -27,7 +32,12 @@ export const login = createAsyncThunk(
 export const userSlice = createSlice({
   name: 'status',
   initialState,
-  reducers: {},
+  reducers: {
+    logout: (state) => {
+      state.token = null;
+      authService.setToken(null);
+    },
+  },
   extraReducers: (builder) => {
     builder
       .addCase(login.pending, (state) => {
@@ -38,6 +48,7 @@ export const userSlice = createSlice({
         state.status = ServiceCallStatus.SUCCESS;
       })
       .addCase(login.rejected, (state) => {
+        state.token = null;
         state.status = ServiceCallStatus.FAILURE;
       })
       .addCase(me.pending, (state) => {
@@ -50,6 +61,12 @@ export const userSlice = createSlice({
       })
       .addCase(me.rejected, (state) => {
         state.status = ServiceCallStatus.FAILURE;
+      })
+      .addCase(refresh.rejected, (state) => {
+        state.token = null;
+      })
+      .addCase(refresh.fulfilled, (state, { payload }) => {
+        state.token = payload;
       });
   },
 });
@@ -61,3 +78,4 @@ export const selectToken = (state: TasqueState) => state.user.token;
 export const selectLoginStatus = (state: TasqueState) => state.user.status;
 
 export const userReducer = userSlice.reducer;
+export const { logout } = userSlice.actions;

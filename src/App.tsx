@@ -3,11 +3,26 @@ import { useTasqueDispatch, useTasqueSelector } from './app/hooks';
 import GlobalStyle from './components/GlobalStyle';
 import TableOfContents from './components/pages/TableOfContents';
 import LoginWindow from './components/windows/LoginWindow';
+import { validateToken } from './service/authService';
+import { TasqueDispatch } from './stores';
 import { refreshLabels, selectLabelStatus } from './stores/labelSlice';
 import { getAllProjects } from './stores/projectSlice';
 import { refreshStatuses, selectStatusStatus } from './stores/statusSlice';
 import { ServiceCallStatus } from './stores/types';
-import { selectIsLoggedIn } from './stores/userSlice';
+import { logout, refresh, selectIsLoggedIn } from './stores/userSlice';
+
+const checkIfLoggedIn = (dispatch: TasqueDispatch) => {
+  if (!validateToken(60)) {
+    if (!validateToken()) {
+      dispatch(logout());
+      return;
+    }
+
+    dispatch(refresh());
+  }
+
+  setTimeout(() => checkIfLoggedIn(dispatch), 1000);
+};
 
 function App(): JSX.Element {
   const dispatch = useTasqueDispatch();
@@ -18,6 +33,12 @@ function App(): JSX.Element {
       dispatch(refreshLabels());
       dispatch(refreshStatuses());
       dispatch(getAllProjects());
+    }
+  }, [dispatch, isLoggedIn]);
+
+  useEffect(() => {
+    if (isLoggedIn) {
+      checkIfLoggedIn(dispatch);
     }
   }, [dispatch, isLoggedIn]);
 
