@@ -30,6 +30,11 @@ export const updateTicket = createAsyncThunk(
   (ticket: projectService.Ticket) => projectService.updateTicket(ticket),
 );
 
+export const newTicket = createAsyncThunk(
+  'status/newTicket',
+  (ticket: Partial<projectService.Ticket>) => projectService.newTicket(ticket),
+);
+
 const updateProjectCallStatus = (
   state: ProjectState,
   id: number,
@@ -77,6 +82,12 @@ export const projectSlice = createSlice({
           if (project?.tickets && project?.tickets[index].timestamp < payload.timestamp) {
             project.tickets[index] = payload;
           }
+        }
+      })
+      .addCase(newTicket.fulfilled, (state, { payload }) => {
+        const project = state.projects.find(p => p.id === payload.project);
+        if (project) {
+          project.tickets?.push(payload);
         }
       });
   },

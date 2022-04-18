@@ -1,4 +1,4 @@
-import { get, patch } from '../adapter/httpAdapter';
+import { get, patch, post } from '../adapter/httpAdapter';
 import { getBackendEndpoint } from '../config';
 import { getToken, Token } from './authService';
 
@@ -67,6 +67,38 @@ export async function updateTicket(ticket: Ticket, token: Token = getToken()): P
   const { data } = await patch<TicketResponse, UpdateOrCreateTicketRequest>(
     `${getBackendEndpoint()}/api/v1/project/${ticket.project}/ticket/${ticket.id}`,
     updatedTicket,
+    { headers: { Authorization: `Bearer ${token.accessToken}` } },
+  );
+
+  return {
+    id: data.id,
+    title: data.title,
+    content: data.content,
+    status: data.status_id,
+    label: data.label_id,
+    project: data.project_id,
+    points: data.points,
+    parent: data.parent_id,
+    timestamp: Date.now(),
+  };
+}
+
+export async function newTicket(
+  ticket: Partial<Ticket>,
+  token: Token = getToken(),
+): Promise<Ticket> {
+  const request: UpdateOrCreateTicketRequest = {
+    title: ticket.title,
+    content: ticket.content,
+    status_id: ticket.status,
+    label_id: ticket.label,
+    parent_id: ticket.parent,
+    points: ticket.points,
+  };
+
+  const { data } = await post<TicketResponse, UpdateOrCreateTicketRequest>(
+    `${getBackendEndpoint()}/api/v1/project/${ticket.project}/ticket`,
+    request,
     { headers: { Authorization: `Bearer ${token.accessToken}` } },
   );
 

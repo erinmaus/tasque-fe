@@ -1,8 +1,14 @@
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
-import { useTasqueObjectSelector } from '../../app/hooks';
+import { useTasqueDispatch, useTasqueObjectSelector } from '../../app/hooks';
+import { BuiltInLabelTypes } from '../../service/labelService';
 import { Ticket } from '../../service/projectService';
-import { selectTicketChildren } from '../../stores/projectSlice';
+import { BuiltinStatusTypes } from '../../service/statusService';
+import { selectLabels } from '../../stores/labelSlice';
+import { newTicket, selectTicketChildren } from '../../stores/projectSlice';
+import { selectStatuses } from '../../stores/statusSlice';
+import PrimaryButton from '../common/button/PrimaryButton';
 import TicketDescription from '../TicketDescription';
 import TicketLabel from '../TicketLabel';
 import TicketPoints from '../TicketPoints';
@@ -54,6 +60,14 @@ export interface TicketProps {
   expandChildren?: boolean;
 }
 
+const LABEL_ORDER = [
+  BuiltInLabelTypes.MILESTONE,
+  BuiltInLabelTypes.EPIC,
+  BuiltInLabelTypes.FEATURE,
+  BuiltInLabelTypes.STORY,
+  BuiltInLabelTypes.TASK,
+];
+
 function TicketRow({
   projectID,
   ticket,
@@ -61,10 +75,40 @@ function TicketRow({
   expandChildren = false,
 }: TicketProps): JSX.Element {
   const children = useTasqueObjectSelector(selectTicketChildren(projectID, ticket.id));
+  const statuses = useTasqueObjectSelector(selectStatuses);
+  const labels = useTasqueObjectSelector(selectLabels);
+  const dispatch = useTasqueDispatch();
+  const navigate = useNavigate();
+
+  const createNewTicket = () => {
+    const label = labels.find(l => l.id === ticket.label);
+    let nextLabelOrderIndex = LABEL_ORDER.findIndex(l => l === label?.title) + 1;
+    if (nextLabelOrderIndex >= LABEL_ORDER.length) {
+      nextLabelOrderIndex = LABEL_ORDER.length - 1;
+    }
+
+    dispatch(newTicket({
+      title: 'New Ticket',
+      content: 'This is a newly created ticket.',
+      status: (
+        statuses.find(s => s.title === BuiltinStatusTypes.NOT_STARTED)?.id
+        || statuses[0]?.id
+        || 1
+      ),
+      label: (
+        labels.find(l => l.title === LABEL_ORDER[nextLabelOrderIndex])?.id
+        || labels[0]?.id
+        || 1
+      ),
+      points: 0,
+      parent: ticket.id,
+      project: projectID,
+    }));
+  };
 
   return (
     <TicketDetails open={expand}>
-      <TicketSummary>
+      <TicketSummary onDoubleClick={() => navigate(`/project/${projectID}/ticket/${ticket.id}`)}>
         <TicketID>{`#${ticket.id}`}</TicketID>
         <TicketLabel ticket={ticket} />
         <TicketStatus ticket={ticket} />
@@ -72,15 +116,15 @@ function TicketRow({
         <TicketProgress ticket={ticket} />
         <TicketTitle ticket={ticket} />
       </TicketSummary>
+      <PrimaryButton onClick={createNewTicket}>New...</PrimaryButton>
       <TicketDescription ticket={ticket} />
       {
         children && (
           <TicketList>
             {
               children.map(t => (
-                <li>
+                <li key={t.id}>
                   <TicketRow
-                    key={t.id}
                     projectID={projectID}
                     ticket={t}
                     expand={expandChildren}
