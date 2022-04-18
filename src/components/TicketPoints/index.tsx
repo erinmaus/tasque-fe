@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import { useTasqueDispatch, useTasqueObjectSelector, useTasqueSelector } from '../../app/hooks';
 import { Ticket } from '../../service/projectService';
@@ -26,6 +26,10 @@ function TicketPoints({ ticket }: TicketPointsProps): JSX.Element {
   const children = useTasqueObjectSelector(selectTicketChildren(ticket.project, ticket.id));
   const hasNoChildren = !children || children.length === 0;
   const [points, setPoints] = useState((!hasNoChildren ? totalPoints : ticket.points).toFixed());
+
+  useEffect(() => {
+    setPoints((!hasNoChildren ? totalPoints : ticket.points).toFixed());
+  }, [hasNoChildren, ticket.points, totalPoints]);
 
   const onChange = ({ target }: React.ChangeEvent<HTMLInputElement>) => {
     setPoints(target.value);
