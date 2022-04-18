@@ -1,4 +1,4 @@
-import { get } from '../adapter/httpAdapter';
+import { get, patch } from '../adapter/httpAdapter';
 import { getBackendEndpoint } from '../config';
 import { getToken, Token } from './authService';
 
@@ -34,6 +34,11 @@ export interface Ticket {
   project: number;
   points: number;
   parent: number;
+  timestamp: number;
+}
+
+interface UpdateOrCreateTicketRequest extends Partial<Omit<TicketResponse, 'id' | 'project_id'>> {
+  // Nothing.
 }
 
 export enum TicketLookupQueryType {
@@ -47,6 +52,34 @@ export interface TicketLookupQuery {
   status?: number;
   offset?: number;
   limit?: number;
+}
+
+export async function updateTicket(ticket: Ticket, token: Token = getToken()): Promise<Ticket> {
+  const updatedTicket: UpdateOrCreateTicketRequest = {
+    title: ticket.title,
+    content: ticket.content,
+    status_id: ticket.status,
+    label_id: ticket.label,
+    parent_id: ticket.parent,
+  };
+
+  const { data } = await patch<TicketResponse, UpdateOrCreateTicketRequest>(
+    `${getBackendEndpoint()}/api/v1/project/${ticket.project}/ticket/${ticket.id}`,
+    updatedTicket,
+    { headers: { Authorization: `Bearer ${token.accessToken}` } },
+  );
+
+  return {
+    id: data.id,
+    title: data.title,
+    content: data.content,
+    status: data.status_id,
+    label: data.label_id,
+    project: data.project_id,
+    points: data.points,
+    parent: data.parent_id,
+    timestamp: Date.now(),
+  };
 }
 
 export async function getAllProjects(token: Token = getToken()): Promise<Project[]> {
@@ -87,5 +120,6 @@ export async function getAllTickets(
     project: d.project_id,
     points: d.points,
     parent: d.parent_id,
+    timestamp: Date.now(),
   }));
 }

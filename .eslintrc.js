@@ -23,6 +23,7 @@ module.exports = {
     '@typescript-eslint'
   ],
   rules: {
+    'react/require-default-props': 'off',
     'arrow-parens': 'off',
     'import/prefer-default-export': 'off',
     'no-param-reassign': [

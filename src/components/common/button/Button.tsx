@@ -19,6 +19,8 @@ const Button = styled.button.attrs(({ type }) => ({
   font-weight: 500;
   font-size: 1.5rem;
 
+  padding: 0.5rem 1rem;
+
   border-image: url(${inactive}) 24 24 fill / 24px 24px repeat;
 
   &:hover {

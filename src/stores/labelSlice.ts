@@ -35,6 +35,9 @@ export const selectLabels = (state: TasqueState) => state.label.labels;
 export const selectLabel = (id: number) => (state: TasqueState) => (
   state.label.labels.find((l) => l.id === id)
 );
+export const selectLabelTitle = (id: number) => (state: TasqueState) => (
+  state.label.labels.find((l) => l.id === id)?.title
+);
 export const selectLabelStatus = (state: TasqueState) => state.label.status;
 
 export const labelReducer = labelSlice.reducer;

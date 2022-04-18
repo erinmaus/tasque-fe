@@ -25,6 +25,11 @@ export const getAllProjects = createAsyncThunk(
   },
 );
 
+export const updateTicket = createAsyncThunk(
+  'status/updateTicket',
+  (ticket: projectService.Ticket) => projectService.updateTicket(ticket),
+);
+
 const updateProjectCallStatus = (
   state: ProjectState,
   id: number,
@@ -64,6 +69,15 @@ export const projectSlice = createSlice({
       })
       .addCase(getAllTickets.rejected, (state, { meta: { arg: { id } } }) => {
         updateProjectCallStatus(state, id, ServiceCallStatus.FAILURE);
+      })
+      .addCase(updateTicket.fulfilled, (state, { payload }) => {
+        const project = state.projects.find(p => p.id === payload.project);
+        const index = project?.tickets?.findIndex(t => t.id === payload.id);
+        if (index !== undefined && index >= 0) {
+          if (project?.tickets && project?.tickets[index].timestamp < payload.timestamp) {
+            project.tickets[index] = payload;
+          }
+        }
       });
   },
 });
@@ -82,10 +96,22 @@ export const selectProjectTitle = (id: number) => (
 export const selectTickets = (id: number) => (state: TasqueState) => (
   state.project.projects.find(p => p.id === id)?.tickets
 );
+export const selectOrphanTickets = (id: number) => (
+  (state: TasqueState) => {
+    const tickets = state.project.projects.find(p => p.id === id)?.tickets;
+    return tickets && tickets.filter(t => !t.parent);
+  }
+);
 export const selectTicket = (projectID: number, ticketID: number) => (
   (state: TasqueState) => {
     const tickets = state.project.projects.find(p => p.id === projectID)?.tickets;
     return tickets && tickets.find(t => t.id === ticketID);
+  }
+);
+export const selectTicketChildren = (projectID: number, ticketID: number) => (
+  (state: TasqueState) => {
+    const tickets = state.project.projects.find(p => p.id === projectID)?.tickets;
+    return tickets && tickets.filter(t => t.parent === ticketID);
   }
 );
 
