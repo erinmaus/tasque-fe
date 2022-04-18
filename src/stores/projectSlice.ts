@@ -122,19 +122,19 @@ export const selectTicketChildren = (projectID: number, ticketID: number) => (
 const getPointsRemaining = (
   tickets: projectService.Ticket[],
   ticket: projectService.Ticket,
-  status: number | undefined,
+  status: number[],
 ): number => {
   const children = tickets.filter(t => t.parent === ticket.id);
   return children.reduce(
     (p, t) => getPointsRemaining(tickets, t, status) + p,
-    ticket.status === status || !status ? ticket.points : 0,
+    status.includes(ticket.status) ? ticket.points : 0,
   );
 };
 
 export const selectTicketPoints = (
   projectID: number,
   ticketID: number,
-  status: number | undefined,
+  status: number[],
 ) => (
   (state: TasqueState) => {
     const tickets = state.project.projects.find(p => p.id === projectID)?.tickets;

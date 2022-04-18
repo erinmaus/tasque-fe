@@ -5,6 +5,7 @@ import { Ticket } from '../../service/projectService';
 import { selectTicketChildren } from '../../stores/projectSlice';
 import TicketDescription from '../TicketDescription';
 import TicketLabel from '../TicketLabel';
+import TicketPoints from '../TicketPoints';
 import TicketProgress from '../TicketProgress';
 import TicketTitle from '../TicketTitle';
 import border from './images/border.png';
@@ -18,13 +19,13 @@ const TicketSummary = styled.summary`
   font-family: 'ItsyRealm Sans-Serif', sans-serif;
   font-weight: 500;
   font-size: 1rem;
-
-  input {
-    flex: 1 1 0;
-  }
-
+  
   > * {
     margin-right: 1rem;
+  }
+  
+  > *:last-child {
+    flex: 1 1 0;
   }
 `;
 
@@ -65,6 +66,7 @@ function TicketRow({
       <TicketSummary>
         <TicketID>{`#${ticket.id}`}</TicketID>
         <TicketLabel ticket={ticket} />
+        <TicketPoints ticket={ticket} />
         <TicketProgress ticket={ticket} />
         <TicketTitle ticket={ticket} />
       </TicketSummary>

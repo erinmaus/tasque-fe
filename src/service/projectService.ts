@@ -61,6 +61,7 @@ export async function updateTicket(ticket: Ticket, token: Token = getToken()): P
     status_id: ticket.status,
     label_id: ticket.label,
     parent_id: ticket.parent,
+    points: ticket.points,
   };
 
   const { data } = await patch<TicketResponse, UpdateOrCreateTicketRequest>(

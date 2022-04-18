@@ -83,21 +83,21 @@ function TicketProgress({ ticket }: TicketProgressProps): JSX.Element {
       selectTicketPoints(
         ticket.project,
         ticket.id,
-        mappedStatuses[BuiltinStatusTypes.NOT_STARTED]?.id,
+        [mappedStatuses[BuiltinStatusTypes.NOT_STARTED]?.id || 0],
       ),
     ),
     useTasqueSelector(
       selectTicketPoints(
         ticket.project,
         ticket.id,
-        mappedStatuses[BuiltinStatusTypes.PENDING]?.id,
+        [mappedStatuses[BuiltinStatusTypes.PENDING]?.id || 0],
       ),
     ),
     useTasqueSelector(
       selectTicketPoints(
         ticket.project,
         ticket.id,
-        mappedStatuses[BuiltinStatusTypes.DONE]?.id,
+        [mappedStatuses[BuiltinStatusTypes.DONE]?.id || 0],
       ),
     ),
   ];
