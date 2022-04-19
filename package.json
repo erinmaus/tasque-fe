@@ -32,6 +32,7 @@
     "test": "react-scripts test",
     "eject": "react-scripts eject",
     "prepare": "husky install",
+    "heroku-postbuild": "npm run build",
     "lint:css": "stylelint './src/**/*.js'"
   },
   "browserslist": {
