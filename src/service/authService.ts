@@ -37,10 +37,32 @@ let currentToken: Token | null = null;
 
 export function setToken(token: Token | null) {
   currentToken = token;
+
+  if (token) {
+    sessionStorage.setItem('access_token', JSON.stringify(token));
+  } else {
+    sessionStorage.removeItem('access_token');
+  }
+}
+
+function validateTokenImpl(paddingSeconds: number, token: Token) {
+  const payload = jwt_decode<TokenDetails>(token.accessToken);
+  const now = Math.floor(Date.now() / 1000);
+
+  return now < payload.expires - paddingSeconds;
 }
 
 export function getToken(): Token {
   if (currentToken === null) {
+    const sessionStorageToken = sessionStorage.getItem('access_token');
+    if (sessionStorageToken) {
+      const token = JSON.parse(sessionStorageToken);
+      if (token && validateTokenImpl(0, token)) {
+        setToken(token);
+        return token;
+      }
+    }
+
     throw new Error('Authorizaiton token not set.');
   }
 
@@ -48,7 +70,12 @@ export function getToken(): Token {
 }
 
 export function hasToken(): boolean {
-  return currentToken !== null;
+  try {
+    getToken();
+    return true;
+  } catch (error) {
+    return false;
+  }
 }
 
 export function validateToken(paddingSeconds: number = 0): boolean {
@@ -56,11 +83,7 @@ export function validateToken(paddingSeconds: number = 0): boolean {
     return false;
   }
 
-  const token = getToken();
-  const payload = jwt_decode<TokenDetails>(token.accessToken);
-  const now = Math.floor(Date.now() / 1000);
-
-  return now < payload.expires - paddingSeconds;
+  return validateTokenImpl(paddingSeconds, getToken());
 }
 
 export async function authenticate(username: string, password: string): Promise<Token> {
