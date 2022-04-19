@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useMatch } from 'react-router-dom';
+import { useMatch, useNavigate } from 'react-router-dom';
 import { useTasqueDispatch, useTasqueObjectSelector, useTasqueSelector } from '../../../app/hooks';
 import { BuiltInLabelTypes } from '../../../service/labelService';
 import { BuiltinStatusTypes } from '../../../service/statusService';
@@ -28,6 +28,7 @@ function Project(): JSX.Element {
   const projectStatus = useTasqueSelector(selectProjectStatus(id));
   const tickets = useTasqueObjectSelector(selectOrphanTickets(id));
   const [expandAll, setExpandAll] = useState(false);
+  const navigate = useNavigate();
 
   const createNewTicket = () => {
     const label = labels.find(l => l.title === BuiltInLabelTypes.MILESTONE);
@@ -58,6 +59,7 @@ function Project(): JSX.Element {
       </ContentHeader>
       <PrimaryButton onClick={createNewTicket}>New milestone...</PrimaryButton>
       <Button onClick={() => setExpandAll(!expandAll)}>Expand All</Button>
+      <Button onClick={() => navigate(-1)}>Back</Button>
       {isLoading && <Loader />}
       <ul>
         {

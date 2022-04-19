@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useMatch } from 'react-router-dom';
+import { useMatch, useNavigate } from 'react-router-dom';
 import { useTasqueObjectSelector, useTasqueSelector } from '../../../app/hooks';
 import { selectProjectStatus, selectProjectTitle, selectTicket } from '../../../stores/projectSlice';
 import { ServiceCallStatus } from '../../../stores/types';
@@ -18,6 +18,7 @@ function Ticket(): JSX.Element {
   const projectStatus = useTasqueSelector(selectProjectStatus(projectID));
   const ticket = useTasqueObjectSelector(selectTicket(projectID, ticketID));
   const [expandAll, setExpandAll] = useState(false);
+  const navigate = useNavigate();
 
   const isLoading = (
     projectStatus === ServiceCallStatus.IDLE
@@ -33,6 +34,7 @@ function Ticket(): JSX.Element {
       <ContentHeader>
         {projectTitle}
         <Button onClick={() => setExpandAll(!expandAll)}>Expand All</Button>
+        <Button onClick={() => navigate(-1)}>Back</Button>
       </ContentHeader>
       {isLoading && <Loader />}
       {
