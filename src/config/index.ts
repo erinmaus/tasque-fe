@@ -4,6 +4,6 @@ export function getBackendEndpoint() {
       return 'http://localhost:8000';
     case 'tasque.itsyrealm.com':
     default:
-      return 'http://api.tasque.itsyrealm.com';
+      return 'https://api.tasque.itsyrealm.com';
   }
 }
