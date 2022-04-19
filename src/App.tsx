@@ -9,7 +9,9 @@ import { refreshLabels, selectLabelStatus } from './stores/labelSlice';
 import { getAllProjects } from './stores/projectSlice';
 import { refreshStatuses, selectStatusStatus } from './stores/statusSlice';
 import { ServiceCallStatus } from './stores/types';
-import { logout, refresh, selectIsLoggedIn } from './stores/userSlice';
+import {
+  logout, me, refresh, selectIsLoggedIn, selectUsername,
+} from './stores/userSlice';
 
 const checkIfLoggedIn = (dispatch: TasqueDispatch) => {
   if (!validateToken(60)) {
@@ -27,6 +29,7 @@ const checkIfLoggedIn = (dispatch: TasqueDispatch) => {
 function App(): JSX.Element {
   const dispatch = useTasqueDispatch();
   const isLoggedIn = useTasqueSelector(selectIsLoggedIn);
+  const username = useTasqueSelector(selectUsername);
 
   useEffect(() => {
     if (isLoggedIn) {
@@ -35,6 +38,12 @@ function App(): JSX.Element {
       dispatch(getAllProjects());
     }
   }, [dispatch, isLoggedIn]);
+
+  useEffect(() => {
+    if (isLoggedIn && !username) {
+      dispatch(me());
+    }
+  }, [dispatch, isLoggedIn, username]);
 
   useEffect(() => {
     if (isLoggedIn) {
