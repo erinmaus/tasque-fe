@@ -60,12 +60,6 @@ export function validateToken(paddingSeconds: number = 0): boolean {
   const payload = jwt_decode<TokenDetails>(token.accessToken);
   const now = Math.floor(Date.now() / 1000) + new Date().getTimezoneOffset() * 60;
 
-  console.log({
-    now,
-    expires: payload.expires - paddingSeconds,
-    less: now < payload.expires - paddingSeconds,
-  });
-
   return now < payload.expires - paddingSeconds;
 }
 
