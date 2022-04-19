@@ -13,7 +13,9 @@ import { logout, refresh, selectIsLoggedIn } from './stores/userSlice';
 
 const checkIfLoggedIn = (dispatch: TasqueDispatch) => {
   if (!validateToken(60)) {
+    console.log('--- Token expiring.');
     if (!validateToken()) {
+      console.log('--- Logging out.');
       dispatch(logout());
       return;
     }
