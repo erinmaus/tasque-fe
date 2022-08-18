@@ -16,7 +16,6 @@ import Loader from '../../common/loader/Loader';
 import Failure from '../../common/panel/Failure';
 import Panel from '../../common/panel/Panel';
 import ContentParagraph from '../../common/text/ContentParagraph';
-import Sprints from '../../Sprints';
 import TicketRow from '../../TicketRow';
 
 function Project(): JSX.Element {
@@ -29,7 +28,6 @@ function Project(): JSX.Element {
   const projectStatus = useTasqueSelector(selectProjectStatus(id));
   const tickets = useTasqueObjectSelector(selectOrphanTickets(id));
   const [expandAll, setExpandAll] = useState(false);
-  const [showSprints, setShowSprints] = useState(false);
   const navigate = useNavigate();
 
   const createNewTicket = () => {
@@ -61,7 +59,7 @@ function Project(): JSX.Element {
       </ContentHeader>
       <PrimaryButton onClick={createNewTicket}>New milestone...</PrimaryButton>
       <Button onClick={() => setExpandAll(!expandAll)}>Expand All</Button>
-      <Button onClick={() => setShowSprints(!showSprints)}>Sprints</Button>
+      <Button onClick={() => navigate(`/project/${id}/sprints`)}>Sprints</Button>
       <Button onClick={() => navigate(-1)}>Back</Button>
       {isLoading && <Loader />}
       <ul>
@@ -82,14 +80,6 @@ function Project(): JSX.Element {
       {
         !isLoading && !isFailure && tickets?.length === 0 && (
           <ContentParagraph>There are no tickets for this project.</ContentParagraph>
-        )
-      }
-      {
-        !isLoading && showSprints && (
-          <>
-            <ContentHeader>Sprints</ContentHeader>
-            <Sprints id={id} />
-          </>
         )
       }
     </Panel>

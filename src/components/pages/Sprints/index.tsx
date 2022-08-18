@@ -1,13 +1,43 @@
 import React from 'react';
 import moment, { Moment } from 'moment';
-import { useTasqueObjectSelector } from '../../app/hooks';
-import { selectTickets } from '../../stores/projectSlice';
-import { selectStatuses } from '../../stores/statusSlice';
-import ContentParagraph from '../common/text/ContentParagraph';
+import { useMatch } from 'react-router-dom';
+import styled from 'styled-components';
+import { useTasqueObjectSelector, useTasqueSelector } from '../../../app/hooks';
+import { selectProjectStatus, selectProjectTitle, selectTickets } from '../../../stores/projectSlice';
+import { selectStatuses } from '../../../stores/statusSlice';
+import ContentParagraph from '../../common/text/ContentParagraph';
+import Panel from '../../common/panel/Panel';
+import ContentHeader from '../../common/headers/ContentHeader';
+import { ServiceCallStatus } from '../../../stores/types';
+import border from './images/border.png';
+import TicketRow from '../../TicketRow';
 
-export interface SprintsProps {
-  id: number;
-}
+const SprintSummary = styled.summary`
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: baseline;
+
+  font-family: 'ItsyRealm Sans-Serif', sans-serif;
+  font-weight: 500;
+  font-size: 1rem;
+  
+  > * {
+    margin-right: 1rem;
+  }
+  
+  > input:last-of-type {
+    flex: 1 1 0;
+  }
+`;
+
+const SprintDetails = styled.details`
+  padding: 1rem;
+
+  &:hover, &[open] {
+    border-image: url(${border}) 16 16 fill / 16px 16px repeat;
+  }
+`;
 
 const getWeeks = (start: Moment, stop: Moment) => {
   const result: Moment[] = [];
@@ -26,9 +56,11 @@ const isInWeek = (week: Moment, date: Moment) => {
   return date.isSameOrAfter(beginningOfWeek) && date.isBefore(endOfWeek);
 };
 
-function Sprints({
-  id,
-}: SprintsProps): JSX.Element {
+function Sprints(): JSX.Element {
+  const match = useMatch('/project/:id/sprints');
+  const id = Number(match?.params.id);
+  const projectTitle = useTasqueSelector(selectProjectTitle(id));
+  const projectStatus = useTasqueSelector(selectProjectStatus(id));
   const statuses = useTasqueObjectSelector(selectStatuses);
   const doneStatus = statuses?.find(status => status.title === 'Done');
   const tickets = useTasqueObjectSelector(selectTickets(id));
@@ -52,16 +84,19 @@ function Sprints({
     pointsPerWeek.reduce((previous, current) => previous + current, 0) / pointsPerWeek.length
   );
 
-  const isLoading = !weeks;
+  const isLoading = !weeks || projectStatus === ServiceCallStatus.PENDING;
 
   if (isLoading) {
     return <ContentParagraph>Loading...</ContentParagraph>;
   }
 
   return (
-    <>
+    <Panel>
+      <ContentHeader>
+        {`${projectTitle} Sprints`}
+      </ContentHeader>
       <ContentParagraph>
-        {`Overall velocity: ${Math.round(averagePoints || 0)} points per week`}
+        {`Overall velocity is ${Math.round(averagePoints || 0)} points per week! Below are the individual sprints.`}
       </ContentParagraph>
       <ul>
         {
@@ -80,25 +115,25 @@ function Sprints({
 
             return (
               <li key={week.format()}>
-                <details>
-                  <summary>
+                <SprintDetails>
+                  <SprintSummary>
                     {`Sprint ${index + 1} (${week.format('YYYY/MM/DD')})`}
                     <ContentParagraph>{`Completed ${points} points across ${ticketsInWeek?.length || 0} tickets.`}</ContentParagraph>
-                  </summary>
+                  </SprintSummary>
                   <ul>
                     {
                       ticketsInWeek.map(ticket => (
-                        <li key={ticket.id}>{`#${ticket.id}: ${ticket.title}`}</li>
+                        <TicketRow projectID={id} ticket={ticket} expandChildren={false} />
                       ))
                     }
                   </ul>
-                </details>
+                </SprintDetails>
               </li>
             );
           })
         }
       </ul>
-    </>
+    </Panel>
   );
 }
 
