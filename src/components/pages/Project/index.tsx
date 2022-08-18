@@ -59,6 +59,7 @@ function Project(): JSX.Element {
       </ContentHeader>
       <PrimaryButton onClick={createNewTicket}>New milestone...</PrimaryButton>
       <Button onClick={() => setExpandAll(!expandAll)}>Expand All</Button>
+      <Button onClick={() => navigate(`/project/${id}/sprints`)}>Sprints</Button>
       <Button onClick={() => navigate(-1)}>Back</Button>
       {isLoading && <Loader />}
       <ul>
