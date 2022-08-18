@@ -1,3 +1,4 @@
+import moment from 'moment';
 import { get, patch, post } from '../adapter/httpAdapter';
 import { getBackendEndpoint } from '../config';
 import { getToken, Token } from './authService';
@@ -23,6 +24,7 @@ interface TicketResponse {
   project_id: number;
   points: number;
   parent_id: number;
+  status_update: string;
 }
 
 export interface Ticket {
@@ -34,6 +36,7 @@ export interface Ticket {
   project: number;
   points: number;
   parent: number;
+  statusUpdate: string;
   timestamp: number;
 }
 
@@ -79,6 +82,7 @@ export async function updateTicket(ticket: Ticket, token: Token = getToken()): P
     project: data.project_id,
     points: data.points,
     parent: data.parent_id,
+    statusUpdate: moment().format('YYYY-MM-DD'),
     timestamp: Date.now(),
   };
 }
@@ -111,6 +115,7 @@ export async function newTicket(
     project: data.project_id,
     points: data.points,
     parent: data.parent_id,
+    statusUpdate: moment().format('YYYY-MM-DD'),
     timestamp: Date.now(),
   };
 }
@@ -153,6 +158,7 @@ export async function getAllTickets(
     project: d.project_id,
     points: d.points,
     parent: d.parent_id,
+    statusUpdate: d.status_update,
     timestamp: Date.now(),
   }));
 }
